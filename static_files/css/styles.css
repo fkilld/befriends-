@@ -1,0 +1,21 @@
+
+
+
+
+.card-img-top {
+  width: 70%;
+  height: 70%;
+  
+}
+
+.card{
+  margin-bottom: 1.5rem!important;
+}
+
+
+caption { caption-side:top; } 
+
+#messageFeed{
+  height: calc(100vh - 172px); 
+  overflow-y: scroll; 
+}

@@ -1,0 +1,45 @@
+{% extends 'pages/base.html' %}
+
+
+ {% block content%}
+   <div class="row">
+        {% include 'pages/includes/_sidebar.html'%}
+
+        <div class="col-lg-9 col-md-9 col-sm-12">
+            <div class="card bg-light">
+                <div class="card-header text-center">Search for People</div>
+                <div class="card-body">
+                    <form action="{% url 'pages:search' %}" method="get">
+                        <div class="form-group">
+                            <label for="langspeaks">Speaks</label>
+                            <input type="text" name="speaks" value="{{ request.GET.speaks }}" class="form-control" id="langspeaks" placeholder="value1, value2">
+                        </div>
+                        <div class="form-group">
+                            <label for="langlearning">Is learning</label>
+                            <input type="text" name="learning" value="{{ request.GET.learning }}"  class="form-control" id="langlearning" placeholder="value1, value2">
+                        </div>
+                        <button type="submit" class="btn btn-info">Search</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for u in page_obj %}
+                <div class="col-md-3 col-sm-6">
+                    <div class="card">
+                        <img src="{{u.photo.url}}" class="card-img-top mx-auto">
+                        <div class="card-body">
+                            <h5 class="card-title text-center"><a href="{{u.get_absolute_url}}">{{u}}</a></h5>
+                            <p class="card-text">
+                                <span><strong>Speaks: </strong>{{u.speaks}}</span></br>
+                                <span><strong>Is learning: </strong>{{u.is_learning}}</span></br>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+{% endblock content%}

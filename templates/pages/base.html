@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FKD</title>
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+        <div class="container">
+            <a href="{% url 'pages:index' %}" class="navbar navbar-brand">FKD</a>
+        </div>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav ml-auto">
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{{request.user.profile.get_absolute_url}}" class="nav-link">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'conversations:inbox' %}" class="nav-link">Inbox</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+    {% if messages %}
+        {% for message in messages  %}
+
+        {% if message.tags == 'error' %}
+            <div class="alert alert-danger" role="alert">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{message}}
+            </div>
+        {% else %}
+
+        <div class="alert alert-{{message.tags}}" role="alert">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {{message}}
+
+        </div>
+
+        {% endif %}
+
+        {% endfor %}
+    {% endif %}
+
+        {% block content%}
+        {% endblock content%}
+
+    </div>
+
+    {% if page_obj.has_other_pages %}
+
+    <ul class="pagination justify-content-center">
+        {% for p in page_obj.paginator.page_range  %}
+
+            {% if page_obj.number == p %}
+            <li class="page-item active">
+                <a href="?{{ s }}page={{p}}" class="page-link">{{p}}</a>
+            </li>
+            {% else %}
+            <li class="page-item ">
+                <a href="?{{ s }}page={{p}}" class="page-link">{{p}}</a>
+            </li>
+
+            {% endif %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <footer class="bg-dark text-white mt-auto">
+        <div class="container py-4">
+            <p class="text-center"> Copyright &copy; FKD 2020</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'vendor/jquery/jquery.min.js'%}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+
+    {% block js%}
+    {% endblock js%}
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+
+<div class="col-sm-8 mx-auto mb-5">
+    <h2>Register</h2>
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+    {% for error in form.non_field_errors  %}
+        <p>{{error}}</p>
+    {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" autocomplete="off">
+        {% csrf_token %}
+        {% for field in form %}
+        <p>
+            {{ field.label_tag }}<br>
+            {{field}}
+            {% if field.help_text %}
+            <small style="color:gray">{{field.help_text}}</small>
+            {% endif %}
+            {% for error in field.errors %}       
+            <p style="color:red">{{error}}</p>
+            {% endfor %}
+        </p>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">Register</button>
+
+    </form>
+
+
+</div>
+
+{% endblock content %}

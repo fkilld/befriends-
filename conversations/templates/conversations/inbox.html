@@ -1,0 +1,73 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+
+<div class="row">
+    {% include 'pages/includes/_sidebar.html' %}
+    <div class="col-md-9 col-sm-12">
+
+        <div class="table-responsive">
+            <table class="table">
+                <caption>List of ongoing chats </caption>
+                <thead>
+                    <tr>
+                        <th>Chat</th>
+                        <th>Unread</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cd,u in chat_details  %}
+                    <tr>
+
+                        <td>
+                            <a href="{% url 'conversations:chatbox' cd.chat_id %}">
+                            {{forloop.counter}} Chat with {{cd.profile}}
+                            </a>
+                        </td>
+
+                        <td>
+                            {% if u != False %}
+                                <h5><span class="badge badge-primary badge-pill">{{u}}</span></h5>
+                            {% else %}
+                                <p> - </p>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'conversations:delete_chat' cd.chat_id %}" class="btn btn-outline-danger">Delete chat</a>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if friends %}
+        <div class="table-responsive">
+            <table class="table">
+                <caption>Start a new chat with: </caption>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in friends  %}
+                        <tr>
+                            <td>{{f}}</td>
+                            <td>{{f.user.email}}</td>
+                            {% if request.user.profile.id == profile.id %}
+                            <td><a href="{% url 'conversations:inbox_new_chat' f.id %}" class="btn btn-outline-info" >Start chatting</a></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
+

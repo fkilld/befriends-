@@ -1,0 +1,51 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+
+<div class="row">
+    {% include 'pages/includes/_sidebar.html' %}
+    <div class="col-md-9 col-sm-12">
+
+        <div id="messageFeed" class="p-3">
+            {% for m in msg %}
+            <div class="card {% if request.user.profile == m.profile  %} ml-auto text-light bg-dark {% endif %}" style="width: 20rem;">
+                <div class="card-header font-weight-bold">
+                    {{m.profile}} | {{m.date}}
+                    {% if request.user.profile == m.profile %}
+                        <a href="{% url 'conversations:delete_message' m.id %}" class="close text-light">
+                            <span>&times;</span>
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {{m}}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <form method="post" autocomplete="off">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+            {% for field in form  %}
+                {{field}}
+            {% endfor %}
+            <button type="submit" class="btn btn-outline-primary">Send</button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+{% endblock content %}
+
+ {% block js %}
+ <script>
+      var d = $('#messageFeed');
+      d.scrollTop(d.prop("scrollHeight"));
+
+      $('html,body').animate({scrollTop:$(document).height()},'slow');
+
+ </script>
+
+ {% endblock js %}

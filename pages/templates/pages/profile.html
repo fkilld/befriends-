@@ -1,0 +1,118 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+
+<div class="row">
+    {% include 'pages/includes/_sidebar.html' %}
+
+    <div class="col-md-9 col-sm-12">
+        {% if request.user.profile.id == profile.id %}
+        <div class="float-right">
+            <a href="{% url 'pages:edit' %}" class="btn btn-info">Edit profile</a>
+        </div>
+
+
+        {% elif request.user.is_authenticated%}
+            {% if btn_text == 'not_friend' %}
+            <div class="float-right">
+                <a href="{% url 'pages:send_request' profile.id %}" class="btn btn-primary">Add Friend</a>
+            </div>
+
+            {% elif btn_text == 'request_sent' %}
+            <div class="float-right">
+                <a href="{% url 'pages:cancel_request' profile.id %}" class="btn btn-warning">Cancel Request</a>
+            </div>
+            {% endif %}
+
+        {% endif %}
+
+        <h3>{{profile.user}}</h3>
+        <div class="my-4">
+            <h6>{{profile.first}} {{profile.last}} | {{profile.user.email}}</h6>
+            <h6>Speaks: {{profile.speaks}}</h6>
+            <h6>Is learning: {{profile.is_learning}}</h6>
+        </div>
+
+
+        {% if friends %}
+        <div class="table-responsive">
+            <table class="table">
+                <caption>List of People</caption>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in friends  %}
+                    <tr>
+                        <td>{{f}}</td>
+                        <td>{{f.user.email}}</td>
+                        {% if request.user.profile.id == profile.id %}
+                        <td><a href="{% url 'pages:unfriend' f.id %}" class="btn btn-danger confirm-delete" id="{{f}}" data-toggle="modal" data-target="#confirmModal">Unfriend</a></td>
+                        {% endif %}
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% endif %}
+
+
+        {% if request.user.profile.id == profile.id and received_requests %}
+         <div class="table-responsive">
+             <table class="table">
+                 <caption>Received friend requests: </caption>
+                 <tbody>
+                    {% for r_request in received_requests %}
+                        <tr>
+                            <td>{{r_request}}</td>
+                            <td><a class="btn btn-primary" href="{% url 'pages:accept_request' r_request.from_profile.id %}">Accept</a></td>
+                            <td><a class="btn btn-danger" href="{% url 'pages:delete_request' r_request.from_profile.id %}">Delete</a></td>
+                        </tr>
+                    {% endfor %}
+
+                 </tbody>
+             </table>
+         </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<div class="modal fade" id="confirmModal" tabindex="-1" caller-id="" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="confirmButtonModal">Unfriend</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
+
+{% block js %}
+<script type="text/javascript">
+
+    $(document).on('click','.confirm-delete', function(){
+        $("#confirmModal").attr("caller-id",$(this).attr("id"));
+        $("div.modal-body").text("Are you sure you want to unfriend "+ $(this).attr("id")+"?");
+    });
+
+    $(document).on('click','#confirmButtonModal', function(){
+        var caller = $("#confirmButtonModal").closest(".modal").attr("caller-id");
+        window.location = $("#".concat(caller)).attr("href");
+    });
+
+
+
+</script>
+{% endblock js %}
